@@ -1,0 +1,105 @@
+git init
+"use client";
+import React, { useState, useEffect } from 'react';
+
+// --- ADD YOUR POEMS HERE ---
+const POEMS = [
+  {
+    id: 1,
+    title: "People like us",
+    content: `There are people like us.
+We are born with a sore
+A spot on our soul.
+It is tiny in the beginning,
+Almost benign, but soon
+It turns to a cancer you can’t deny.
+It makes us see things
+Others can not; we are young
+But early, we die and rot.
+We break down between stations.
+And on moving trains
+We get stuck
+in our train of thoughts.
+We do not belong.
+We can not be loved.
+There are people like us.`
+  },
+  {
+    id: 2,
+    title: "The Second Verse",
+    content: "Your second poem goes here...\nLine by line."
+  },
+  {
+    id: 3,
+    title: "The Third Verse",
+    content: "Your third poem goes here...\nKeep the rhythm."
+  }
+];
+
+const Typewriter = ({ text }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      setDisplayedText(text.slice(0, i));
+      i++;
+      if (i > text.length) clearInterval(timer);
+    }, 40; // Adjust speed here (lower is faster)
+    return () => clearInterval(timer);
+  }, [text]);
+
+  return <p className="whitespace-pre-line leading-relaxed">{displayedText}</p>;
+};
+
+export default function LyreOfLament() {
+  const [selectedPoem, setSelectedPoem] = useState(null);
+
+  return (
+    <div className="min-h-screen bg-[#f5f5dc] text-[#2c2c2c] p-8 md:p-24 font-serif">
+      <div className="max-w-2xl mx-auto">
+        
+        {/* Header */}
+        <header className="mb-16 border-b border-black/10 pb-4">
+          <h1 className="text-4xl italic font-light tracking-widest">Lyre of Lament</h1>
+        </header>
+
+        {!selectedPoem ? (
+          /* Contents Page */
+          <main className="space-y-6">
+            <h2 className="text-sm uppercase tracking-widest opacity-60 mb-8">Contents</h2>
+            <ul className="space-y-4">
+              {POEMS.map((poem) => (
+                <li key={poem.id}>
+                  <button 
+                    onClick={() => setSelectedPoem(poem)}
+                    className="text-xl hover:italic hover:pl-2 transition-all duration-300"
+                  >
+                    {poem.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </main>
+        ) : (
+          /* Poem View */
+          <main className="animate-fadeIn">
+            <button 
+              onClick={() => setSelectedPoem(null)}
+              className="text-xs uppercase tracking-[0.2em] mb-12 hover:opacity-50 transition-opacity"
+            >
+              ← Back to Contents
+            </button>
+            
+            <article>
+              <h2 className="text-3xl mb-8 italic">{selectedPoem.title}</h2>
+              <div className="text-lg opacity-90">
+                <Typewriter text={selectedPoem.content} />
+              </div>
+            </article>
+          </main>
+        )}
+      </div>
+    </div>
+  );
+}
