@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lyre of Lament</title>
-    <!-- This provides the beautiful layout and fonts instantly -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,25 +11,72 @@
     <style>
         body {
             font-family: 'EB Garamond', serif;
-            background-color: #f5f5dc; /* Light Beige */
-            color: #2c2c2c; /* Soft Charcoal */
+            background-color: #f2eee3; /* Slightly warmer, aged paper beige */
+            color: #2a2a2a; /* Ink charcoal */
+            /* Subtle paper grain using SVG noise */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
         }
+        
+        /* Vignette Shadow for depth */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.08);
+            z-index: 50;
+        }
+
+        /* Ink Bleed Effect */
+        .ink-bleed {
+            text-shadow: 0px 0px 1px rgba(42, 42, 42, 0.4);
+        }
+
+        /* Drop Cap for the first letter of the poem */
+        #poem-content::first-letter {
+            font-size: 3.8rem;
+            font-style: italic;
+            float: left;
+            margin-right: 0.15em;
+            line-height: 0.7;
+            padding-top: 0.15em;
+            color: #1a1a1a;
+        }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background-color: #2a2a2a;
+            vertical-align: text-bottom;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
         .hidden { display: none; }
     </style>
 </head>
-<body class="min-h-screen p-8 md:p-24 flex flex-col justify-between">
-    <div class="max-w-2xl mx-auto w-full">
+<body class="min-h-screen p-8 md:p-24 flex flex-col justify-between relative">
+    
+    <!-- Vignette overlay -->
+    <div class="vignette"></div>
+
+    <div class="max-w-2xl mx-auto w-full relative z-10">
         
         <!-- Header -->
-        <header class="mb-16 border-b border-black/10 pb-4">
+        <header class="mb-16 border-b border-black/10 pb-4 flex justify-between items-end">
             <h1 class="text-4xl italic font-light tracking-widest">Lyre of Lament</h1>
+            <span class="text-2xl opacity-30">❦</span>
         </header>
 
         <!-- Home Page / Table of Contents -->
-        <div id="home-view" class="space-y-6">
+        <div id="home-view" class="space-y-6 animate-fadeIn">
             <h2 class="text-sm uppercase tracking-widest opacity-60 mb-8">Contents</h2>
-            <ul id="poem-list" class="space-y-4">
-                <!-- Your poems will automatically list here -->
+            
+            <!-- "group" class triggers the hover ghost effect -->
+            <ul id="poem-list" class="space-y-4 group">
+                <!-- Poems list here -->
             </ul>
         </div>
 
@@ -39,12 +85,21 @@
             <button onclick="showHome()" class="text-xs uppercase tracking-[0.2em] mb-12 hover:opacity-50 transition-opacity block">
                 ← Back to Contents
             </button>
-            <article>
-                <h2 id="poem-title" class="text-3xl mb-8 italic"></h2>
-                <div id="poem-content" class="text-xl opacity-90 leading-relaxed whitespace-pre-line"></div>
+            <article class="flex flex-col items-center">
+                <h2 id="poem-title" class="text-3xl mb-12 italic text-center w-full border-b border-black/5 pb-6"></h2>
+                
+                <!-- Container to keep text left-aligned while centering the block -->
+                <div class="w-full max-w-sm">
+                    <div id="poem-content" class="text-xl opacity-90 leading-relaxed whitespace-pre-line ink-bleed"></div>
+                </div>
             </article>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="mt-24 text-center opacity-30 relative z-10 pb-8">
+        <p class="text-xs uppercase tracking-[0.3em]">A spot on our soul</p>
+    </footer>
 
     <script>
         // ==========================================
@@ -113,7 +168,6 @@ For yours is in your being.
 Zarathustra stops speaking
 For Nietzsche finds his God alive.`
             } 
-            // When you want to add a new poem, you'll put a comma here and paste it!
         ];
 
         const homeView = document.getElementById('home-view');
@@ -123,17 +177,17 @@ For Nietzsche finds his God alive.`
         const poemContent = document.getElementById('poem-content');
         let typewriterInterval;
 
-        // Creates the clickable list on the homepage
         function init() {
             poemList.innerHTML = '';
             POEMS.forEach((poem, index) => {
                 const li = document.createElement('li');
+                // Adds the fade-out ghost effect to un-hovered items
+                li.className = "transition-opacity duration-500 hover:!opacity-100 group-hover:opacity-30";
                 li.innerHTML = `<button onclick="openPoem(${index})" class="text-2xl hover:italic hover:pl-2 transition-all duration-300 text-left">${poem.title}</button>`;
                 poemList.appendChild(li);
             });
         }
 
-        // Handles clicking a poem and typing it out
         function openPoem(index) {
             const poem = POEMS[index];
             homeView.classList.add('hidden');
@@ -141,17 +195,21 @@ For Nietzsche finds his God alive.`
             poemTitle.innerText = poem.title;
             
             clearInterval(typewriterInterval);
-            poemContent.innerText = '';
+            poemContent.innerHTML = '';
             let i = 0;
             const text = poem.content;
             
             typewriterInterval = setInterval(() => {
-                poemContent.innerText = text.slice(0, i);
+                let currentText = text.slice(0, i);
+                // Injects the blinking cursor dynamically
+                poemContent.innerHTML = currentText + '<span class="cursor"></span>';
                 i++;
                 if (i > text.length) {
                     clearInterval(typewriterInterval);
+                    // Removes cursor when finished
+                    poemContent.innerHTML = text;
                 }
-            }, 35); // Controls typewriter typing speed
+            }, 40); 
         }
 
         function showHome() {
@@ -160,7 +218,6 @@ For Nietzsche finds his God alive.`
             homeView.classList.remove('hidden');
         }
 
-        // Fire up the website
         init();
     </script>
 </body>
