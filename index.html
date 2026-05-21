@@ -31,17 +31,6 @@
             text-shadow: 0px 0px 1px rgba(42, 42, 42, 0.4);
         }
 
-        /* Drop Cap for the first letter of the poem */
-        #poem-content::first-letter {
-            font-size: 3.8rem;
-            font-style: italic;
-            float: left;
-            margin-right: 0.15em;
-            line-height: 0.7;
-            padding-top: 0.15em;
-            color: #1a1a1a;
-        }
-
         /* Typewriter Cursor */
         .cursor {
             display: inline-block;
@@ -62,7 +51,7 @@
     <!-- Vignette overlay -->
     <div class="vignette"></div>
 
-    <div class="max-w-2xl mx-auto w-full relative z-10">
+    <div class="max-w-2xl mx-auto w-full relative z-10 flex-grow">
         
         <!-- Header -->
         <header class="mb-16 border-b border-black/10 pb-4 flex justify-between items-end">
@@ -97,7 +86,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="mt-24 text-center opacity-30 relative z-10 pb-8">
+    <footer id="footer-quote" class="mt-24 text-center opacity-30 relative z-10 pb-8">
         <p class="text-xs uppercase tracking-[0.3em]">A spot on our soul</p>
     </footer>
 
@@ -175,6 +164,7 @@ For Nietzsche finds his God alive.`
         const poemList = document.getElementById('poem-list');
         const poemTitle = document.getElementById('poem-title');
         const poemContent = document.getElementById('poem-content');
+        const footerQuote = document.getElementById('footer-quote');
         let typewriterInterval;
 
         function init() {
@@ -190,7 +180,12 @@ For Nietzsche finds his God alive.`
 
         function openPoem(index) {
             const poem = POEMS[index];
+            
+            // Hide home view and footer
             homeView.classList.add('hidden');
+            footerQuote.classList.add('hidden');
+            
+            // Show poem view
             poemView.classList.remove('hidden');
             poemTitle.innerText = poem.title;
             
@@ -215,7 +210,10 @@ For Nietzsche finds his God alive.`
         function showHome() {
             clearInterval(typewriterInterval);
             poemView.classList.add('hidden');
+            
+            // Bring back home view and footer
             homeView.classList.remove('hidden');
+            footerQuote.classList.remove('hidden');
         }
 
         init();
