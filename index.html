@@ -46,7 +46,7 @@
         .hidden { display: none; }
     </style>
 </head>
-<body class="min-h-screen p-8 md:p-24 flex flex-col justify-between relative">
+<body class="min-h-screen p-8 md:p-24 flex flex-col relative">
     
     <!-- Vignette overlay -->
     <div class="vignette"></div>
@@ -54,9 +54,8 @@
     <div class="max-w-2xl mx-auto w-full relative z-10 flex-grow">
         
         <!-- Header -->
-        <header class="mb-16 border-b border-black/10 pb-4 flex justify-between items-end">
+        <header class="mb-16 border-b border-black/10 pb-4">
             <h1 class="text-4xl italic font-light tracking-widest">Lyre of Lament</h1>
-            <span class="text-2xl opacity-30">❦</span>
         </header>
 
         <!-- Home Page / Table of Contents -->
@@ -84,11 +83,6 @@
             </article>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer id="footer-quote" class="mt-24 text-center opacity-30 relative z-10 pb-8">
-        <p class="text-xs uppercase tracking-[0.3em]">A spot on our soul</p>
-    </footer>
 
     <script>
         // ==========================================
@@ -162,61 +156,64 @@ For Nietzsche finds his God alive.`
         const homeView = document.getElementById('home-view');
         const poemView = document.getElementById('poem-view');
         const poemList = document.getElementById('poem-list');
-        const poemTitle = document.getElementById('poem-title');
-        const poemContent = document.getElementById('poem-content');
-        const footerQuote = document.getElementById('footer-quote');
-        let typewriterInterval;
+Consider it done! I have removed the "A spot on our soul" footer completely, and taken out the `❦` symbol from the top right corner.
 
-        function init() {
-            poemList.innerHTML = '';
-            POEMS.forEach((poem, index) => {
-                const li = document.createElement('li');
-                // Adds the fade-out ghost effect to un-hovered items
-                li.className = "transition-opacity duration-500 hover:!opacity-100 group-hover:opacity-30";
-                li.innerHTML = `<button onclick="openPoem(${index})" class="text-2xl hover:italic hover:pl-2 transition-all duration-300 text-left">${poem.title}</button>`;
-                poemList.appendChild(li);
-            });
+The code is now perfectly clean and minimal, just focusing entirely on the titles and your poetry. 
+
+Copy this entire block and replace your code on GitHub:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyre of Lament</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap](https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: #f2eee3; /* Slightly warmer, aged paper beige */
+            color: #2a2a2a; /* Ink charcoal */
+            /* Subtle paper grain using SVG noise */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='[http://www.w3.org/2000/svg'%3E%3Cfilter](http://www.w3.org/2000/svg'%3E%3Cfilter) id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+        
+        /* Vignette Shadow for depth */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.08);
+            z-index: 50;
         }
 
-        function openPoem(index) {
-            const poem = POEMS[index];
-            
-            // Hide home view and footer
-            homeView.classList.add('hidden');
-            footerQuote.classList.add('hidden');
-            
-            // Show poem view
-            poemView.classList.remove('hidden');
-            poemTitle.innerText = poem.title;
-            
-            clearInterval(typewriterInterval);
-            poemContent.innerHTML = '';
-            let i = 0;
-            const text = poem.content;
-            
-            typewriterInterval = setInterval(() => {
-                let currentText = text.slice(0, i);
-                // Injects the blinking cursor dynamically
-                poemContent.innerHTML = currentText + '<span class="cursor"></span>';
-                i++;
-                if (i > text.length) {
-                    clearInterval(typewriterInterval);
-                    // Removes cursor when finished
-                    poemContent.innerHTML = text;
-                }
-            }, 40); 
+        /* Ink Bleed Effect */
+        .ink-bleed {
+            text-shadow: 0px 0px 1px rgba(42, 42, 42, 0.4);
         }
 
-        function showHome() {
-            clearInterval(typewriterInterval);
-            poemView.classList.add('hidden');
-            
-            // Bring back home view and footer
-            homeView.classList.remove('hidden');
-            footerQuote.classList.remove('hidden');
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background-color: #2a2a2a;
+            vertical-align: text-bottom;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
         }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="min-h-screen p-8 md:p-24 flex flex-col relative">
+    
+    <!-- Vignette overlay -->
+    <div class="vignette"></div>
 
-        init();
-    </script>
-</body>
-</html>
+    <div class="max-w-2xl mx-auto w-full relative z-
