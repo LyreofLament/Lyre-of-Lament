@@ -1,386 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lyre of Lament</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f5f0e8;
-      --ink: #2c2416;
-      --ink-faint: #7a6e5f;
-      --ink-lighter: #b0a898;
-      --accent: #8b6f47;
-      --rule: #d4c9b5;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background-color: var(--bg);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      color: var(--ink);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 1.5rem;
-    }
-
-    header {
-      width: 100%;
-      max-width: 640px;
-      padding: 5rem 0 2.5rem;
-      text-align: center;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .site-eyebrow {
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      margin-bottom: 1.4rem;
-    }
-
-    h1 {
-      font-family: 'IM Fell English', Georgia, serif;
-      font-weight: 400;
-      font-style: italic;
-      font-size: clamp(2.4rem, 6vw, 3.6rem);
-      line-height: 1.1;
-      color: var(--ink);
-    }
-
-    .site-sub {
-      margin-top: 1rem;
-      font-size: 1rem;
-      font-style: italic;
-      color: var(--ink-faint);
-    }
-
-    main {
-      width: 100%;
-      max-width: 640px;
-      padding: 3.5rem 0 6rem;
-    }
-
-    .toc-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--ink-lighter);
-      margin-bottom: 2rem;
-    }
-
-    .poem-list {
-      list-style: none;
-      counter-reset: poem-counter;
-    }
-
-    .poem-list li {
-      counter-increment: poem-counter;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .poem-list li:first-child { border-top: 1px solid var(--rule); }
-
-    .poem-link {
-      display: flex;
-      align-items: baseline;
-      gap: 1.2rem;
-      padding: 1.3rem 0;
-      text-decoration: none;
-      color: var(--ink);
-      cursor: pointer;
-      transition: color 0.2s ease;
-    }
-
-    .poem-link::before {
-      content: counter(poem-counter, upper-roman);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      color: var(--ink-lighter);
-      min-width: 2rem;
-      flex-shrink: 0;
-    }
-
-    .poem-link:hover { color: var(--accent); }
-
-    .poem-title-text {
-      font-family: 'IM Fell English', Georgia, serif;
-      font-size: 1.35rem;
-      font-style: italic;
-      line-height: 1.2;
-      flex: 1;
-    }
-
-    .poem-link-arrow {
-      font-size: 0.9rem;
-      color: var(--ink-lighter);
-      transition: transform 0.2s ease, color 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .poem-link:hover .poem-link-arrow { transform: translateX(4px); color: var(--accent); }
-
-    .poem-page {
-      display: none;
-      width: 100%;
-      max-width: 640px;
-      padding: 3.5rem 0 6rem;
-      animation: fadeIn 0.55s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      text-decoration: none;
-      margin-bottom: 3.5rem;
-      transition: color 0.2s;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: 'Cormorant Garamond', serif;
-      padding: 0;
-    }
-
-    .back-link:hover { color: var(--accent); }
-
-    .back-link svg {
-      width: 14px;
-      height: 14px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .poem-heading {
-      font-family: 'IM Fell English', Georgia, serif;
-      font-size: clamp(1.9rem, 5vw, 2.8rem);
-      font-style: italic;
-      font-weight: 400;
-      margin-bottom: 3rem;
-      color: var(--ink);
-      line-height: 1.15;
-    }
-
-    .poem-body {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.18rem;
-      line-height: 2.05;
-      color: var(--ink);
-      white-space: pre-wrap;
-      min-height: 2em;
-    }
-
-    .caret {
-      display: inline-block;
-      width: 2px;
-      height: 1.1em;
-      background: var(--accent);
-      vertical-align: text-bottom;
-      margin-left: 1px;
-      animation: blink 0.9s step-end infinite;
-    }
-
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    footer {
-      margin-top: auto;
-      padding: 2rem 0 3rem;
-      font-size: 0.78rem;
-      color: var(--ink-lighter);
-      letter-spacing: 0.05em;
-      text-align: center;
-    }
-
-    @media (max-width: 480px) {
-      header { padding: 3.5rem 0 2rem; }
-      main { padding: 2.5rem 0 4rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyre of Lament</title>
+    <!-- This provides the beautiful layout and fonts instantly -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: #f5f5dc; /* Light Beige */
+            color: #2c2c2c; /* Soft Charcoal */
+        }
+        .hidden { display: none; }
+    </style>
 </head>
-<body>
+<body class="min-h-screen p-8 md:p-24 flex flex-col justify-between">
+    <div class="max-w-2xl mx-auto w-full">
+        
+        <!-- Header -->
+        <header class="mb-16 border-b border-black/10 pb-4">
+            <h1 class="text-4xl italic font-light tracking-widest">Lyre of Lament</h1>
+        </header>
 
-  <header id="home-header">
-    <p class="site-eyebrow">A collection of poems</p>
-    <h1>Lyre of Lament</h1>
-    <p class="site-sub">words written quietly</p>
-  </header>
+        <!-- Home Page / Table of Contents -->
+        <div id="home-view" class="space-y-6">
+            <h2 class="text-sm uppercase tracking-widest opacity-60 mb-8">Contents</h2>
+            <ul id="poem-list" class="space-y-4">
+                <!-- Your poems will automatically list here -->
+            </ul>
+        </div>
 
-  <main id="home-main">
-    <p class="toc-label">Contents</p>
-    <ul class="poem-list" id="poem-list"></ul>
-  </main>
+        <!-- Poem Viewer Page -->
+        <div id="poem-view" class="hidden">
+            <button onclick="showHome()" class="text-xs uppercase tracking-[0.2em] mb-12 hover:opacity-50 transition-opacity block">
+                ← Back to Contents
+            </button>
+            <article>
+                <h2 id="poem-title" class="text-3xl mb-8 italic"></h2>
+                <div id="poem-content" class="text-xl opacity-90 leading-relaxed whitespace-pre-line"></div>
+            </article>
+        </div>
+    </div>
 
-  <div class="poem-page" id="poem-page">
-    <button class="back-link" id="back-btn">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Back to contents
-    </button>
-    <h2 class="poem-heading" id="poem-heading"></h2>
-    <div class="poem-body" id="poem-body"></div>
-  </div>
-
-  <footer>all words here are my own</footer>
-
-  <script>
-    /* =====================================================
-       HOW TO ADD YOUR POEMS
-       ─────────────────────────────────────────────────────
-       Each poem is an object with:
-         title : name shown in the contents list
-         text  : the full poem. Leave a blank line between
-                 stanzas. Indentation is preserved as-is.
-
-       To add a new poem:
-         1. Copy the block that starts with  {
-            and ends with   },
-         2. Paste it after the last poem entry
-            (before the closing  ];  )
-         3. Replace the title and text with your poem.
-
-       That's it — it will appear automatically in the list.
-    ===================================================== */
-
-    const poems = [
-
-      {
-        title: "People like us",
-        text:
-`There are people like us.
+    <script>
+        // ==========================================
+        // --- YOUR POEMS ARE LISTED RIGHT HERE ---
+        // ==========================================
+        const POEMS = [
+            {
+                title: "People like us",
+                content: `There are people like us.
 We are born with a sore
 A spot on our soul.
-
 It is tiny in the beginning,
 Almost benign, but soon
-It turns to a cancer you can't deny.
-
+It turns to a cancer you can’t deny.
 It makes us see things
 Others can not; we are young
 But early, we die and rot.
-
 We break down between stations.
 And on moving trains
 We get stuck
 in our train of thoughts.
-
 We do not belong.
 We can not be loved.
 There are people like us.`
-      },
+            }
+            // When you want to add a new poem, you'll put a comma here and paste it!
+        ];
 
-      /* ── ADD YOUR NEXT POEM HERE ──────────────────────
+        const homeView = document.getElementById('home-view');
+        const poemView = document.getElementById('poem-view');
+        const poemList = document.getElementById('poem-list');
+        const poemTitle = document.getElementById('poem-title');
+        const poemContent = document.getElementById('poem-content');
+        let typewriterInterval;
 
-      {
-        title: "Your Poem Title",
-        text:
-`First line
-Second line
-
-New stanza begins here`
-      },
-
-      ── REPEAT FOR EACH ADDITIONAL POEM ── */
-
-    ];
-
-    /* ===================================================== */
-
-
-    const list = document.getElementById('poem-list');
-    poems.forEach(p => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.className = 'poem-link';
-      a.href = '#';
-      a.innerHTML = `<span class="poem-title-text">${p.title}</span><span class="poem-link-arrow">→</span>`;
-      a.addEventListener('click', e => { e.preventDefault(); showPoem(p); });
-      li.appendChild(a);
-      list.appendChild(li);
-    });
-
-    document.getElementById('back-btn').addEventListener('click', showHome);
-
-    function showPoem(poem) {
-      document.getElementById('home-header').style.display = 'none';
-      document.getElementById('home-main').style.display = 'none';
-      const page = document.getElementById('poem-page');
-      page.style.display = 'block';
-      document.getElementById('poem-heading').textContent = poem.title;
-      typewrite(poem.text, document.getElementById('poem-body'));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function showHome() {
-      document.getElementById('home-header').style.display = '';
-      document.getElementById('home-main').style.display = '';
-      document.getElementById('poem-page').style.display = 'none';
-      document.getElementById('poem-body').innerHTML = '';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function typewrite(text, el) {
-      el.innerHTML = '';
-      const caret = document.createElement('span');
-      caret.className = 'caret';
-      el.appendChild(caret);
-
-      const lines = text.split('\n');
-      let lineIdx = 0, charIdx = 0;
-      const charDelay = 36, stanzaDelay = 420, lineDelay = 75;
-
-      function type() {
-        if (lineIdx >= lines.length) {
-          setTimeout(() => caret.remove(), 1200);
-          return;
+        // Creates the clickable list on the homepage
+        function init() {
+            poemList.innerHTML = '';
+            POEMS.forEach((poem, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<button onclick="openPoem(${index})" class="text-2xl hover:italic hover:pl-2 transition-all duration-300 text-left">${poem.title}</button>`;
+                poemList.appendChild(li);
+            });
         }
 
-        const line = lines[lineIdx];
-
-        if (line === '') {
-          el.insertBefore(document.createElement('br'), caret);
-          el.insertBefore(document.createElement('br'), caret);
-          lineIdx++; charIdx = 0;
-          setTimeout(type, stanzaDelay);
-          return;
+        // Handles clicking a poem and typing it out
+        function openPoem(index) {
+            const poem = POEMS[index];
+            homeView.classList.add('hidden');
+            poemView.classList.remove('hidden');
+            poemTitle.innerText = poem.title;
+            
+            clearInterval(typewriterInterval);
+            poemContent.innerText = '';
+            let i = 0;
+            const text = poem.content;
+            
+            typewriterInterval = setInterval(() => {
+                poemContent.innerText = text.slice(0, i);
+                i++;
+                if (i > text.length) {
+                    clearInterval(typewriterInterval);
+                }
+            }, 35); // Controls typewriter typing speed
         }
 
-        if (charIdx === 0 && lineIdx > 0) {
-          el.insertBefore(document.createElement('br'), caret);
+        function showHome() {
+            clearInterval(typewriterInterval);
+            poemView.classList.add('hidden');
+            homeView.classList.remove('hidden');
         }
 
-        if (charIdx < line.length) {
-          el.insertBefore(document.createTextNode(line[charIdx]), caret);
-          charIdx++;
-          setTimeout(type, charDelay + (Math.random() * 18 - 9));
-        } else {
-          lineIdx++; charIdx = 0;
-          setTimeout(type, lineDelay);
-        }
-      }
-
-      setTimeout(type, 300);
-    }
-  </script>
+        // Fire up the website
+        init();
+    </script>
 </body>
 </html>
